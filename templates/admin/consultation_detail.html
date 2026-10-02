@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Consultation Detail{% endblock %}
+{% block heading %}Consultation #{{ c.id }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h3 class="mt-0">{{ c.subject }} <span class="badge badge-{{ c.status }}">{{ c.status }}</span></h3>
+    <p class="text-muted small">Requested on {{ c.created_at }} · Last updated {{ c.updated_at }}</p>
+
+    <p><strong>Student:</strong> {{ c.student_name }}</p>
+    <p><strong>Medical Expert:</strong> {{ c.expert_name or 'Unassigned' }}</p>
+    <p><strong>Description:</strong><br>{{ c.description or '—' }}</p>
+    <p><strong>Preferred Date:</strong> {{ c.preferred_date }}</p>
+    {% if c.notes %}
+    <p><strong>Consultation Notes:</strong><br>{{ c.notes }}</p>
+    {% endif %}
+
+    <h3 style="margin-top: 24px;">Activity Log</h3>
+    <table>
+        <thead><tr><th>Action</th><th>By</th><th>Details</th><th>When</th></tr></thead>
+        <tbody>
+        {% for l in logs %}
+            <tr>
+                <td>{{ l.action }}</td>
+                <td>{{ l.performed_by_name or 'System' }}</td>
+                <td>{{ l.details or '—' }}</td>
+                <td>{{ l.timestamp }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <p style="margin-top: 20px;"><a href="{{ url_for('admin.consultations') }}">&larr; Back to consultation logs</a></p>
+</div>
+{% endblock %}

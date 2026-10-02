@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In — ACC Consultation System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <h2>ACC Consultation System</h2>
+        <div class="subtitle">Log in to access your dashboard</div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flashes">
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="username">Username or Email</label>
+                <input type="text" id="username" name="username" required autofocus>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Log In</button>
+        </form>
+
+        <div class="switch-link">
+            New student? <a href="{{ url_for('auth.register') }}">Create an account</a>
+        </div>
+
+        <div class="demo-creds">
+            <strong>Demo credentials</strong><br>
+            Super Admin — admin / Admin@123<br>
+            Medical Expert — drsantos / Expert@123<br>
+            Student — jstudent / Student@123
+        </div>
+    </div>
+</div>
+</body>
+</html>

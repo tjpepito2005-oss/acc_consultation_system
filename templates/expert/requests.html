@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Consultation Requests{% endblock %}
+{% block heading %}Consultation Requests{% endblock %}
+
+{% block content %}
+<div class="filter-bar">
+    <a href="{{ url_for('expert.requests_list') }}" class="{{ 'active' if not status_filter }}">All</a>
+    <a href="{{ url_for('expert.requests_list', status='Pending') }}" class="{{ 'active' if status_filter == 'Pending' }}">Pending</a>
+    <a href="{{ url_for('expert.requests_list', status='Approved') }}" class="{{ 'active' if status_filter == 'Approved' }}">Approved</a>
+    <a href="{{ url_for('expert.requests_list', status='Completed') }}" class="{{ 'active' if status_filter == 'Completed' }}">Completed</a>
+    <a href="{{ url_for('expert.requests_list', status='Declined') }}" class="{{ 'active' if status_filter == 'Declined' }}">Declined</a>
+</div>
+
+<div class="card">
+    {% if consultations %}
+    <table>
+        <thead>
+            <tr><th>Student</th><th>Subject</th><th>Preferred Date</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody>
+        {% for c in consultations %}
+            <tr>
+                <td>{{ c.student_name }}</td>
+                <td>{{ c.subject }}</td>
+                <td>{{ c.preferred_date }}</td>
+                <td><span class="badge badge-{{ c.status }}">{{ c.status }}</span></td>
+                <td><a href="{{ url_for('expert.view_consultation', consultation_id=c.id) }}">View</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">No consultations found for this filter.</div>
+    {% endif %}
+</div>
+{% endblock %}

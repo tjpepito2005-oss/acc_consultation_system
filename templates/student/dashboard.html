@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Student Dashboard{% endblock %}
+{% block heading %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="stat-grid">
+    <div class="stat-card"><div class="num">{{ stats.total or 0 }}</div><div class="label">Total Requests</div></div>
+    <div class="stat-card"><div class="num">{{ stats.pending or 0 }}</div><div class="label">Pending</div></div>
+    <div class="stat-card"><div class="num">{{ stats.approved or 0 }}</div><div class="label">Approved</div></div>
+    <div class="stat-card"><div class="num">{{ stats.completed or 0 }}</div><div class="label">Completed</div></div>
+</div>
+
+<div class="card">
+    <div class="actions-row" style="margin-bottom: 16px;">
+        <a href="{{ url_for('student.book') }}" class="btn btn-primary">+ Book a Consultation</a>
+        <a href="{{ url_for('student.my_consultations') }}" class="btn btn-outline">View All Consultations</a>
+    </div>
+
+    <h3>Recent Requests</h3>
+    {% if recent %}
+    <table>
+        <thead>
+            <tr><th>Subject</th><th>Expert</th><th>Preferred Date</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody>
+        {% for c in recent %}
+            <tr>
+                <td>{{ c.subject }}</td>
+                <td>{{ c.expert_name or 'Unassigned' }}</td>
+                <td>{{ c.preferred_date }}</td>
+                <td><span class="badge badge-{{ c.status }}">{{ c.status }}</span></td>
+                <td><a href="{{ url_for('student.view_consultation', consultation_id=c.id) }}">View</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">You haven't booked any consultations yet.</div>
+    {% endif %}
+</div>
+{% endblock %}

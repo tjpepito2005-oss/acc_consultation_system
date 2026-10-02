@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Consultation Detail{% endblock %}
+{% block heading %}Consultation #{{ c.id }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h3 class="mt-0">{{ c.subject }} <span class="badge badge-{{ c.status }}">{{ c.status }}</span></h3>
+    <p class="text-muted small">Requested on {{ c.created_at }}</p>
+
+    <p><strong>Student:</strong> {{ c.student_name }}{% if c.student_id_no %} ({{ c.student_id_no }}){% endif %}</p>
+    <p><strong>Description:</strong><br>{{ c.description or '—' }}</p>
+    <p><strong>Preferred Date:</strong> {{ c.preferred_date }}</p>
+
+    {% if c.status == 'Pending' %}
+    <div class="actions-row" style="margin-top: 16px;">
+        <form method="POST" action="{{ url_for('expert.accept', consultation_id=c.id) }}">
+            <button type="submit" class="btn btn-success">Accept</button>
+        </form>
+        <button type="button" class="btn btn-danger" onclick="document.getElementById('decline-form').style.display='block'">Decline</button>
+        <button type="button" class="btn btn-outline" onclick="document.getElementById('reschedule-form').style.display='block'">Reschedule</button>
+    </div>
+
+    <form id="decline-form" method="POST" action="{{ url_for('expert.decline', consultation_id=c.id) }}" style="display:none; margin-top: 14px;">
+        <div class="form-group">
+            <label for="reason">Reason for declining</label>
+            <textarea id="reason" name="reason" placeholder="Optional reason shown in the log"></textarea>
+        </div>
+        <button type="submit" class="btn btn-danger">Confirm Decline</button>
+    </form>
+
+    <form id="reschedule-form" method="POST" action="{{ url_for('expert.reschedule', consultation_id=c.id) }}" style="display:none; margin-top: 14px;">
+        <div class="form-group">
+            <label for="new_date">New Date &amp; Time</label>
+            <input type="datetime-local" id="new_date" name="new_date" required>
+        </div>
+        <button type="submit" class="btn btn-outline">Confirm Reschedule</button>
+    </form>
+    {% endif %}
+
+    {% if c.status == 'Approved' %}
+    <div class="card" style="background:#f0fbfa; box-shadow:none; margin-top: 16px;">
+        <h3>Mark as Completed</h3>
+        <form method="POST" action="{{ url_for('expert.complete', consultation_id=c.id) }}">
+            <div class="form-group">
+                <label for="notes">Consultation Notes / Record</label>
+                <textarea id="notes" name="notes" placeholder="Notes shared with the student..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Complete &amp; Save Notes</button>
+        </form>
+    </div>
+    <div class="actions-row" style="margin-top: 12px;">
+        <button type="button" class="btn btn-outline" onclick="document.getElementById('reschedule-form').style.display='block'">Reschedule</button>
+    </div>
+    <form id="reschedule-form" method="POST" action="{{ url_for('expert.reschedule', consultation_id=c.id) }}" style="display:none; margin-top: 14px;">
+        <div class="form-group">
+            <label for="new_date">New Date &amp; Time</label>
+            <input type="datetime-local" id="new_date" name="new_date" required>
+        </div>
+        <button type="submit" class="btn btn-outline">Confirm Reschedule</button>
+    </form>
+    {% endif %}
+
+    {% if c.status == 'Completed' and c.notes %}
+    <div class="card" style="background:#f0fbfa; box-shadow:none;">
+        <h3>Saved Notes</h3>
+        <p>{{ c.notes }}</p>
+    </div>
+    {% endif %}
+
+    <h3 style="margin-top: 24px;">Activity Log</h3>
+    <table>
+        <thead><tr><th>Action</th><th>By</th><th>Details</th><th>When</th></tr></thead>
+        <tbody>
+        {% for l in logs %}
+            <tr>
+                <td>{{ l.action }}</td>
+                <td>{{ l.performed_by_name or 'System' }}</td>
+                <td>{{ l.details or '—' }}</td>
+                <td>{{ l.timestamp }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <p style="margin-top: 20px;"><a href="{{ url_for('expert.requests_list') }}">&larr; Back to requests</a></p>
+</div>
+{% endblock %}

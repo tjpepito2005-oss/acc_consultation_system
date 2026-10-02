@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ACC Consultation System{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="brand"><span class="dot"></span> ACC Consult</div>
+            <div class="role-badge">{{ session.get('role', '')|replace('_', ' ') }}</div>
+            <nav>
+                {% if session.get('role') == 'student' %}
+                    <a href="{{ url_for('student.dashboard') }}">Dashboard</a>
+                    <a href="{{ url_for('student.book') }}">Book Consultation</a>
+                    <a href="{{ url_for('student.my_consultations') }}">My Consultations</a>
+                {% elif session.get('role') == 'medical_expert' %}
+                    <a href="{{ url_for('expert.dashboard') }}">Dashboard</a>
+                    <a href="{{ url_for('expert.requests_list') }}">Consultation Requests</a>
+                    <a href="{{ url_for('expert.history') }}">My History</a>
+                {% elif session.get('role') == 'super_admin' %}
+                    <a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+                    <a href="{{ url_for('admin.users') }}">Manage Users</a>
+                    <a href="{{ url_for('admin.consultations') }}">Consultation Logs</a>
+                    <a href="{{ url_for('admin.settings') }}">Settings</a>
+                {% endif %}
+            </nav>
+            {% if session.get('user_id') %}
+            <a href="{{ url_for('auth.logout') }}" class="logout">Log Out</a>
+            {% endif %}
+        </aside>
+
+        <main class="main">
+            <div class="topbar">
+                <h1>{% block heading %}Dashboard{% endblock %}</h1>
+                {% if session.get('user_id') %}
+                <div class="user-chip">{{ session.get('full_name') }}</div>
+                {% endif %}
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="flashes">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>

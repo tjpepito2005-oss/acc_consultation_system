@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Expert Dashboard{% endblock %}
+{% block heading %}Medical Expert Dashboard{% endblock %}
+
+{% block content %}
+<div class="stat-grid">
+    <div class="stat-card"><div class="num">{{ stats.total or 0 }}</div><div class="label">Total</div></div>
+    <div class="stat-card"><div class="num">{{ stats.pending or 0 }}</div><div class="label">Pending</div></div>
+    <div class="stat-card"><div class="num">{{ stats.approved or 0 }}</div><div class="label">Approved</div></div>
+    <div class="stat-card"><div class="num">{{ stats.completed or 0 }}</div><div class="label">Completed</div></div>
+</div>
+
+<div class="card">
+    <h3>Action Queue</h3>
+    <p class="text-muted small">Unassigned pending requests and your own approved/pending consultations.</p>
+    {% if queue %}
+    <table>
+        <thead>
+            <tr><th>Student</th><th>Subject</th><th>Preferred Date</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody>
+        {% for c in queue %}
+            <tr>
+                <td>{{ c.student_name }}</td>
+                <td>{{ c.subject }}</td>
+                <td>{{ c.preferred_date }}</td>
+                <td><span class="badge badge-{{ c.status }}">{{ c.status }}</span></td>
+                <td><a href="{{ url_for('expert.view_consultation', consultation_id=c.id) }}">View</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">No pending or assigned consultations right now.</div>
+    {% endif %}
+</div>
+{% endblock %}

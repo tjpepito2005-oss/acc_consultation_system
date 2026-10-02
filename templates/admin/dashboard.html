@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block heading %}Super Admin Dashboard{% endblock %}
+
+{% block content %}
+<h3 class="mt-0">Users</h3>
+<div class="stat-grid">
+    <div class="stat-card"><div class="num">{{ user_stats.total or 0 }}</div><div class="label">Total Users</div></div>
+    <div class="stat-card"><div class="num">{{ user_stats.students or 0 }}</div><div class="label">Students</div></div>
+    <div class="stat-card"><div class="num">{{ user_stats.experts or 0 }}</div><div class="label">Medical Experts</div></div>
+    <div class="stat-card"><div class="num">{{ user_stats.deactivated or 0 }}</div><div class="label">Deactivated</div></div>
+</div>
+
+<h3>Consultations</h3>
+<div class="stat-grid">
+    <div class="stat-card"><div class="num">{{ consult_stats.total or 0 }}</div><div class="label">Total</div></div>
+    <div class="stat-card"><div class="num">{{ consult_stats.pending or 0 }}</div><div class="label">Pending</div></div>
+    <div class="stat-card"><div class="num">{{ consult_stats.approved or 0 }}</div><div class="label">Approved</div></div>
+    <div class="stat-card"><div class="num">{{ consult_stats.completed or 0 }}</div><div class="label">Completed</div></div>
+    <div class="stat-card"><div class="num">{{ consult_stats.cancelled or 0 }}</div><div class="label">Cancelled</div></div>
+    <div class="stat-card"><div class="num">{{ consult_stats.declined or 0 }}</div><div class="label">Declined</div></div>
+</div>
+
+<div class="card">
+    <h3>Recent System Activity</h3>
+    {% if recent_logs %}
+    <table>
+        <thead><tr><th>Consultation</th><th>Action</th><th>By</th><th>When</th></tr></thead>
+        <tbody>
+        {% for l in recent_logs %}
+            <tr>
+                <td>{{ l.subject }}</td>
+                <td>{{ l.action }}</td>
+                <td>{{ l.performed_by_name or 'System' }}</td>
+                <td>{{ l.timestamp }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">No activity recorded yet.</div>
+    {% endif %}
+</div>
+{% endblock %}

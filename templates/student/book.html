@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Book a Consultation{% endblock %}
+{% block heading %}Book a Consultation{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 560px;">
+    <form method="POST">
+        <div class="form-group">
+            <label for="subject">Subject *</label>
+            <input type="text" id="subject" name="subject" value="{{ form.get('subject', '') }}" placeholder="e.g. Persistent headaches" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" placeholder="Describe your concern in a bit more detail...">{{ form.get('description', '') }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="expert_id">Preferred Medical Expert (optional)</label>
+            <select id="expert_id" name="expert_id">
+                <option value="">No preference / Any available expert</option>
+                {% for e in experts %}
+                <option value="{{ e.id }}" {% if form.get('expert_id')|string == e.id|string %}selected{% endif %}>
+                    {{ e.full_name }}{% if e.specialty %} — {{ e.specialty }}{% endif %}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="preferred_date">Preferred Date &amp; Time *</label>
+            <input type="datetime-local" id="preferred_date" name="preferred_date" value="{{ form.get('preferred_date', '') }}" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Submit Request</button>
+    </form>
+</div>
+{% endblock %}
